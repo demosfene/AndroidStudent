@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 lastName.setText("");
                 maleGender.setChecked(false);
                 photoUI.setImageResource(R.drawable.ic_launcher_background);
-
+                buttonSave.setClickable(true);
             }
         });
 
