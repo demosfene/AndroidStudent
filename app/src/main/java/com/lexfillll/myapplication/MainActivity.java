@@ -1,5 +1,7 @@
 package com.lexfillll.myapplication;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,12 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private List<Integer> photoFemale;
     private ImageView photoUI;
     private int photo;
+    private SQLiteDatabase db;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         students = new ArrayList();
+        db = getBaseContext().openOrCreateDatabase("student1.db",MODE_PRIVATE, null);
 
         final RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
@@ -74,6 +79,20 @@ public class MainActivity extends AppCompatActivity {
 
         buttonDel.setClickable(false);
 
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonSave.setClickable(true);
+                View group = findViewById(R.id.group);
+                group.setVisibility(View.VISIBLE);
+                name.setText("");
+                lastName.setText("");
+                maleGender.setChecked(false);
+                photoUI.setImageResource(R.drawable.ic_launcher_background);
+            }
+        });
+
+
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,12 +106,11 @@ public class MainActivity extends AppCompatActivity {
                         photo = anyPhoto(photoFemale);
                         studentGender = false;
                     }
-                    students.add(new Student(name.getText().toString(), lastName.getText().toString(), studentGender, photo));
+                    addDB(name.getText().toString(), lastName.getText().toString(), studentGender, photo);
                     studentAdapter.notifyDataSetChanged();
                 }
             }
         });
-
 
         buttonDel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,19 +126,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buttonSave.setClickable(true);
-                View group = findViewById(R.id.group);
-                group.setVisibility(View.VISIBLE);
-                name.setText("");
-                lastName.setText("");
-                maleGender.setChecked(false);
-                photoUI.setImageResource(R.drawable.ic_launcher_background);
-            }
-        });
-
     }
 
     public int anyPhoto(List<Integer> list){
@@ -128,6 +133,33 @@ public class MainActivity extends AppCompatActivity {
         int index = random.nextInt(list.size());
         int photo = list.get(index);
         return photo;
+    }
+
+    public void createDB(){
+        Cursor query = db.rawQuery("SELECT * FROM students;", null);
+        if(query.moveToFirst()){
+            do{
+                if(query.getInt(2) == 1){
+                    studentGender = true;
+                }else
+                    studentGender = false;
+                students.add(new Student(query.getString(0), query.getString(1), studentGender, query.getInt(3) ));
+            }while(query.moveToNext());
+        }
+        query.close();
+        db.close();
+    }
+
+    public void addDB(String name, String lastname, boolean male, int photo) {
+        int intMale;
+        SQLiteDatabase db = getBaseContext().openOrCreateDatabase("student1.db",MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS students (name TEXT, last_name TEXT, male INTEGER, photo INTEGER)");
+        if(male){
+            intMale = 1;
+        }else{
+            intMale = 0;
+        }
+        db.execSQL("INSERT INTO students VALUES ('" + name +"','" + lastname + "',"+intMale+","+photo+");");
     }
 
 }

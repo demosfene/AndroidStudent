@@ -1,4 +1,7 @@
 package com.lexfillll.myapplication;
 
-public class DataBase {
-}
+import android.database.sqlite.SQLiteDatabase;
+
+import static android.content.Context.MODE_PRIVATE;
+
+

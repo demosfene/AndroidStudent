@@ -1,25 +1,17 @@
 package com.lexfillll.myapplication;
 
-import android.text.Editable;
-
 public class Student {
 
     private String firstName;
     private String lastName;
     private boolean maleGender;
     private int photo;
-    private static int index;
 
-    public Student(String firstName, String lastName, boolean malrGender, int photo){
+    public Student(String firstName, String lastName, boolean maleGender, int photo){
         this.firstName = firstName;
         this.lastName = lastName;
-        this.maleGender = malrGender;
+        this.maleGender = maleGender;
         this.photo = photo;
-        index+=1;
-    }
-
-    public static int getIndex() {
-        return index;
     }
 
     public String getFirstName() {
