@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Integer> photoFemale;
     private ImageView photoUI;
     private int photo;
-    private SQLiteDatabase db;
     
 
     @Override
@@ -38,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         students = new ArrayList();
-        db = getBaseContext().openOrCreateDatabase("student1.db",MODE_PRIVATE, null);
+
+        openDB();
 
         final RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         photo = anyPhoto(photoFemale);
                         studentGender = false;
                     }
-                    addDB(name.getText().toString(), lastName.getText().toString(), studentGender, photo);
+                    addInDB(name.getText().toString(), lastName.getText().toString(), studentGender, photo);
                     studentAdapter.notifyDataSetChanged();
                 }
             }
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 maleGender.setChecked(false);
                 photoUI.setImageResource(R.drawable.ic_launcher_background);
                 buttonSave.setClickable(true);
+                studentRemoval(studentToRemove);
             }
         });
 
@@ -135,7 +136,9 @@ public class MainActivity extends AppCompatActivity {
         return photo;
     }
 
-    public void createDB(){
+    public void openDB(){
+        SQLiteDatabase db = getBaseContext().openOrCreateDatabase("student1.db",MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS students (name TEXT, last_name TEXT, male INTEGER, photo INTEGER)");
         Cursor query = db.rawQuery("SELECT * FROM students;", null);
         if(query.moveToFirst()){
             do{
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         db.close();
     }
 
-    public void addDB(String name, String lastname, boolean male, int photo) {
+    public void addInDB(String name, String lastname, boolean male, int photo) {
         int intMale;
         SQLiteDatabase db = getBaseContext().openOrCreateDatabase("student1.db",MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS students (name TEXT, last_name TEXT, male INTEGER, photo INTEGER)");
@@ -160,6 +163,14 @@ public class MainActivity extends AppCompatActivity {
             intMale = 0;
         }
         db.execSQL("INSERT INTO students VALUES ('" + name +"','" + lastname + "',"+intMale+","+photo+");");
+        students.add(new Student(name,lastname,male,photo));
+        db.close();
+    }
+
+    public void studentRemoval(Student studentToRemove){
+        SQLiteDatabase db = getBaseContext().openOrCreateDatabase("student1.db",MODE_PRIVATE, null);
+        db.execSQL("DELETE FROM students WHERE name = '" + studentToRemove.getFirstName()+ "'" + " and last_name = '" + studentToRemove.getLastName() + "' and photo = '" + studentToRemove.getPhoto() + "'");
     }
 
 }
+//

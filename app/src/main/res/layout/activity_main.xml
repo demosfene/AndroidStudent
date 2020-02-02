@@ -68,12 +68,12 @@
         app:layout_constraintTop_toBottomOf="@+id/text_student" />
 
     <EditText
-        android:id="@+id/last_name"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Name"
-        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintBottom_toTopOf="@+id/last_name"
         app:layout_constraintStart_toStartOf="@id/guideline_vert"
         app:layout_constraintTop_toBottomOf="@+id/text_student"
         app:layout_constraintVertical_chainStyle="packed" />
@@ -86,14 +86,14 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/last_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Surname"
         app:layout_constraintBottom_toTopOf="@+id/sex"
-        app:layout_constraintStart_toStartOf="@id/last_name"
-        app:layout_constraintTop_toBottomOf="@+id/last_name" />
+        app:layout_constraintStart_toStartOf="@id/name"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <CheckBox
         android:id="@+id/sex"
